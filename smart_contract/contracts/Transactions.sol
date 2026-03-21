@@ -30,7 +30,6 @@ contract Transactions {
 
     TransferStruct[] private transactions;
 
-    // Mapping to store user transaction history
     mapping(address => uint[]) private userTransactions;
 
     // Modifier for owner-only functions
@@ -39,7 +38,6 @@ contract Transactions {
         _;
     }
 
-    // Function to send ETH + record transaction
     function addToBlockchain(
         address payable receiver,
         string memory message,
@@ -51,7 +49,6 @@ contract Transactions {
 
         transactionCount++;
 
-        // Transfer ETH
         receiver.transfer(msg.value);
 
         transactions.push(TransferStruct(
@@ -63,7 +60,6 @@ contract Transactions {
             keyword
         ));
 
-        // Store transaction index for sender
         userTransactions[msg.sender].push(transactions.length - 1);
 
         emit Transfer(
@@ -76,12 +72,10 @@ contract Transactions {
         );
     }
 
-    // Get all transactions
     function getAllTransactions() public view returns (TransferStruct[] memory) {
         return transactions;
     }
 
-    // Get transactions of a specific user
     function getUserTransactions(address user) public view returns (TransferStruct[] memory) {
         uint[] memory indexes = userTransactions[user];
         TransferStruct[] memory result = new TransferStruct[](indexes.length);
@@ -93,17 +87,14 @@ contract Transactions {
         return result;
     }
 
-    // Get transaction count
     function getTransactionCount() public view returns (uint256) {
         return transactionCount;
     }
 
-    // Withdraw contract balance (owner only)
     function withdraw() public onlyOwner {
         payable(owner).transfer(address(this).balance);
     }
 
-    // Get contract balance
     function getBalance() public view returns (uint) {
         return address(this).balance;
     }
